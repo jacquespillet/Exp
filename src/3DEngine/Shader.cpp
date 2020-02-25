@@ -85,12 +85,14 @@ void Shader::SetId(int id) {
 
 Shader& Shader::operator=(const Shader& other)
 {
-	vertSrc = other.vertSrc;
-	fragSrc = other.fragSrc;
-	geometrySrc = other.geometrySrc;
-	name = other.name;
-	SetId(other.identifier);
-	Compile();	
+	if(other.compiled) {
+		vertSrc = other.vertSrc;
+		fragSrc = other.fragSrc;
+		geometrySrc = other.geometrySrc;
+		name = other.name;
+		SetId(other.identifier);
+		Compile();	
+	}
     return *this;
 }
 

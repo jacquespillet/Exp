@@ -1,5 +1,7 @@
 #include "Scene.hpp"
 #include "Util.hpp"
+#include "CameraScene.hpp"
+#include "TransformComponent.hpp"
 
 #include <QtGui/QOpenGLFunctions>
 #include <QOpenGLFunctions_3_2_Core>
@@ -9,7 +11,8 @@
 namespace KikooRenderer {
 
 namespace CoreEngine {
-    Scene::Scene() : camera(CameraScene(this, 1.0, 70 * Util::DEGTORAD, 0.1, 1000.0, 1.0)){
+    Scene::Scene() {
+        camera = new CameraScene(this, 1.0, 70 * Util::DEGTORAD, 0.1, 1000.0, 1.0);
         this->started = false;
     }
 
@@ -249,12 +252,13 @@ namespace CoreEngine {
         TransformComponent* transform = new TransformComponent();
         
         newObject->AddComponent(mesh);
-        newObject->AddComponent(transform);
+        newObject->transform = transform;
 
         objects3D.push_back(newObject);
     }
 
     void Scene::Enable() {
+        OnEnable();
         //Enable each Object3D in scene
         for(int i=0; i<objects3D.size(); i++) {
             objects3D[i]->Enable();
@@ -263,29 +267,56 @@ namespace CoreEngine {
 
     void Scene::Render() {
         GETGL
-        ogl->glClearColor(0, 0, 0, 0);
+        ogl->glClearColor(0, 0, 0, 1);
         ogl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        OnRender();
         //Render each object
         for(int i=0; i<objects3D.size(); i++) {
             objects3D[i]->Render();
         }
     }
+    void Scene::Destroy() {
+        std::cout << "Scene:OnDestroy: Destroying scene" << std::endl;
+        delete camera;
+        OnDestroy();
+        for(int i=0; i<objects3D.size(); i++) {
+            objects3D[i]->Destroy();
+            delete objects3D[i];
+        }        
+    }
 
 
     void Scene::OnKeyPressEvent(QKeyEvent *e){
-    	//Foreach object : 
-        //  OnKeyPress
-        this->camera.OnKeyPressEvent(e);
+        this->camera->OnKeyPressEvent(e);
+    }
+    void Scene::OnKeyReleaseEvent(QKeyEvent *e){
+        this->camera->OnKeyReleaseEvent(e);
     }
 
+    void Scene::OnMousePressEvent(QMouseEvent *e){
+        this->camera->OnMousePressEvent(e);
+    }
+
+    void Scene::OnMouseReleaseEvent(QMouseEvent *e){
+        this->camera->OnMouseReleaseEvent(e);
+    }
+
+    void Scene::OnMouseMoveEvent(QMouseEvent *e){
+        this->camera->OnMouseMoveEvent(e);
+    }
+
+    void Scene::OnWheelEvent(QWheelEvent *e){
+        this->camera->OnWheelEvent(e);
+    }   
+
+    
     void Scene::SetWindowSize(int w, int h) {
         this->windowWidth = w;
         this->windowHeight = h;
         float aspectRatio = w/h;
 
-        this->camera.aspect = aspectRatio;
-        this->camera.UpdateProjectionMatrix();
+        this->camera->SetAspect(aspectRatio);
+        this->camera->UpdateProjectionMatrix();
     }
 }
 }

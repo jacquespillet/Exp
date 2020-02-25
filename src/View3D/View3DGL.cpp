@@ -23,11 +23,12 @@ namespace KikooRenderer {
 	    scene = new CoreEngine::Scene;
         
         setMouseTracking(true);
-                
+
     }
 
     View3DGL::~View3DGL() {
-
+        makeCurrent();
+        doneCurrent();
     }
 
 
@@ -52,6 +53,24 @@ namespace KikooRenderer {
 
     void View3DGL::initializeGL() {
         if(!scene->started) {
+            GETGL
+            ogl->glDisable(GL_CULL_FACE);  
+            // ogl->glCullFace(GL_BACK);
+            
+            ogl->glEnable(GL_STENCIL_TEST);    
+            ogl->glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);  
+            ogl->glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should update the stencil buffer
+            ogl->glStencilMask(0xFF); // enable writing to the stencil buffer
+            
+            
+            ogl->glEnable(GL_BLEND);
+            ogl->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+            ogl->glEnable(GL_DEPTH_TEST);
+            
+            ogl->glEnable(GL_MULTISAMPLE);
+                        
             scene->Start();
         }
         scene->Enable();
@@ -66,10 +85,10 @@ namespace KikooRenderer {
             makeCurrent();
             scene->OnUpdate();
 
-            if(scene->triggerRefresh) {
+            // if(scene->triggerRefresh) {
                 Refresh();
                 scene->triggerRefresh=false;
-            }
+            // }
 
             doneCurrent();
         });
@@ -79,7 +98,8 @@ namespace KikooRenderer {
         connect(context(), &QOpenGLContext::aboutToBeDestroyed, [this]() {
             makeCurrent();
             timer->stop();
-            // scene->Disable();
+            scene->Destroy();
+            delete scene;
             doneCurrent();
         });
 
@@ -115,22 +135,22 @@ namespace KikooRenderer {
     }
 
     void View3DGL::keyReleaseEvent(QKeyEvent *e) {
-
+        scene->OnKeyReleaseEvent(e);
     }
 
-    void View3DGL::mousePressEvent(QKeyEvent *e) {
-
+    void View3DGL::mousePressEvent(QMouseEvent *e) {
+        scene->OnMousePressEvent(e);
     }
 
-    void View3DGL::mouseReleaseEvent(QKeyEvent *e) {
-
+    void View3DGL::mouseReleaseEvent(QMouseEvent *e) {
+        scene->OnMouseReleaseEvent(e);
     }
 
-    void View3DGL::mouseMoveEvent(QKeyEvent *e) {
-
+    void View3DGL::mouseMoveEvent(QMouseEvent *e) {
+        scene->OnMouseMoveEvent(e);
     }
 
-    void View3DGL::wheelEvent(QKeyEvent *e) {
-
+    void View3DGL::wheelEvent(QWheelEvent *e) {
+        scene->OnWheelEvent(e);
     }   
 }

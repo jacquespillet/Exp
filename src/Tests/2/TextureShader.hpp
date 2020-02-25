@@ -4,10 +4,9 @@
 #include "3DEngine/Shader.hpp"
 
 namespace KikooRenderer {
-using namespace CoreEngine;
-namespace Scene_1_ {
+namespace Scene_2_ {
     
-Shader GetShader();
+Shader GetTextureShader();
 
 }
 }

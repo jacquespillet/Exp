@@ -2,7 +2,7 @@
 
 
 namespace KikooRenderer {
-namespace Scene_1_ {
+namespace Scene_2_ {
     
 Shader GetShader() {
     Shader shader;
@@ -67,18 +67,6 @@ Shader GetShader() {
         return ret;
     }
 
-    float GetSineWave(vec2 xzPos, float _waveLength, float _amplitude, float _speed, vec2 _direction, float _k, out vec3 normal) {
-        float dotTerm = dot(_direction, xzPos);
-
-        float ret = 2 * _amplitude * pow( (sin( dotTerm * _waveLength + time * _speed) + 1) / 2, _k);
-
-        float xDerivative = _k * _direction.x * _waveLength * _amplitude * (2 * _amplitude * pow( (sin( dotTerm * _waveLength + time * _speed) + 1) / 2, _k-1)) * cos(dotTerm * _waveLength+ time * _speed);
-        float zDerivative = _k * _direction.y * _waveLength * _amplitude * (2 * _amplitude * pow( (sin( dotTerm * _waveLength + time * _speed) + 1) / 2, _k-1)) * cos(dotTerm * _waveLength+ time * _speed);
-        normal = normalize(vec3(-xDerivative, 1, -zDerivative));
-
-        return ret;
-    }
-
     void main()
     {
         vec3 normal = vec3(0, 1, 0);
@@ -122,9 +110,8 @@ Shader GetShader() {
     
     void main()
     {
-        vec3 localNormal = fragNormal - texture(albedoTexture, fragUv).xyz;
+        vec3 localNormal = fragNormal;
         localNormal = normalize(localNormal);
-        // vec3 localNormal = normalize(fragNormal);
 
         vec3 fragToLight = normalize(lightPos - fragPos);
         vec3 fragToEye   = normalize(eyePos   - fragPos);

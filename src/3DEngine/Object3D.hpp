@@ -8,6 +8,7 @@ namespace KikooRenderer {
 
 namespace CoreEngine {
 class Component;
+class TransformComponent;
 class Scene;
 class Object3D {
     public: 
@@ -20,6 +21,8 @@ class Object3D {
         bool visible;
         bool enabled;
 
+        TransformComponent* transform;
+
         Object3D(std::string name, Scene* scene, Shader _shader);
         void AddComponent(Component* component);
         Component*  GetComponent(std::string name);
@@ -27,6 +30,7 @@ class Object3D {
         void OnStart();
         void Enable();
         void Render();
+        void Destroy();
 };
 }
 

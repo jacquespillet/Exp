@@ -12,12 +12,19 @@ set(MainWindowSrc
 	3DEngine/Shader.cpp
 	3DEngine/StandardShaders.cpp
 	3DEngine/CameraScene.cpp
+	3DEngine/CameraController.cpp
 	3DEngine/Util.cpp
-
-	Geometry/Util.cpp
+	3DEngine/Texture.cpp
+	3DEngine/Framebuffer.cpp
 
 	Tests/1/Scene_1.cpp
 	Tests/1/PlaneShader.cpp
+	Tests/1/TextureShader.cpp
+	
+	Tests/2/Scene_2.cpp
+	Tests/2/PlaneShader.cpp
+	Tests/2/GroundShader.cpp
+	Tests/2/TextureShader.cpp
 )
 
 add_executable(MainWindow ${MainWindowSrc})

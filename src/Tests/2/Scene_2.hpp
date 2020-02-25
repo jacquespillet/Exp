@@ -1,15 +1,16 @@
 #pragma once
 #include "3DEngine/Scene.hpp"
 #include "PlaneShader.hpp"
+#include "GroundShader.hpp"
 #include "TextureShader.hpp"
 #include "3DEngine/Framebuffer.hpp"
 
 namespace KikooRenderer {
-namespace Scene_1_ {
+namespace Scene_2_ {
 
-class Scene_1 : public Scene {
+class Scene_2 : public Scene {
 public:
-    Scene_1(){}
+    Scene_2(){}
 
     virtual void Start();
     void virtual OnUpdate();
@@ -18,8 +19,11 @@ public:
 
 
     Object3D* plane;
+    
+    Object3D* ground;
 
-    Framebuffer* fb;
+    Framebuffer* fb0;
+    Framebuffer* fb1;
     Object3D* quad;
 
     int vNumWaves = 10;
@@ -33,18 +37,6 @@ public:
     std::vector<float> vqs;
     std::vector<float> vSpeeds;
     std::vector<glm::vec2> vDirections;
-
-    int tNumWaves = 1;
-    float tWaveLengthMedian = 100;
-    glm::vec2 tDirectionsMedian = glm::vec2(1, 0);
-    float tAmplitudesMedian = 0.1;
-    float tqMedian = 0.1;
-    float tSpeedMedian = 1;
-    std::vector<float> tqs;
-    std::vector<float> tWaveLengths;
-    std::vector<float> tAmplitudes;
-    std::vector<float> tSpeeds;
-    std::vector<glm::vec2> tDirections;
 
     float _time=0;
 

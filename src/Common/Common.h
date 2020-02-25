@@ -83,3 +83,17 @@
 #include <iomanip>
 #include <numeric>
 #include <random>
+
+
+
+inline float GetRand(float median, float deviation){ 
+	float min = median - deviation;
+	float max = median + deviation;
+	float range = max - min;
+	return ((float)std::rand() / RAND_MAX) * range + min;
+}
+
+inline float GetRandBtw(float min, float max){ 
+	float range = max - min;
+	return ((float)std::rand() / RAND_MAX) * range + min;
+}

@@ -4,13 +4,14 @@
 #include "Component.hpp"
 #include "Object3D.hpp"
 #include "StandardShaders.hpp"
-#include "CameraScene.hpp"
+// #include "CameraScene.hpp"
 #include "MeshFilterComponent.hpp"
 
 namespace KikooRenderer {
 namespace CoreEngine {
 class Object3D;
 class CameraScene;
+
 
 class Scene {
     public: 
@@ -19,12 +20,12 @@ class Scene {
 		virtual void Render();
         virtual void Enable();
         // void Disable();
-        // void Destroy();
+        void Destroy();
         bool started;
 
 		std::vector<Object3D*> objects3D; 
 		StandardShaders standardShaders;
-		CameraScene camera;
+		CameraScene* camera;
 
 
 		void virtual OnStart(){};
@@ -35,11 +36,11 @@ class Scene {
 		void virtual OnDestroy(){};
 		
 		virtual void OnKeyPressEvent(QKeyEvent *e);
-		virtual void OnKeyReleaseEvent(QKeyEvent *e){}
-		virtual void OnMousePressEvent(QMouseEvent *e){}
-		virtual void OnMouseReleaseEvent(QMouseEvent *e){}
-		virtual void OnMouseMoveEvent(QMouseEvent *e){}
-		virtual void OnWheelEvent(QWheelEvent *event){}       
+		virtual void OnKeyReleaseEvent(QKeyEvent *e);
+		virtual void OnMousePressEvent(QMouseEvent *e);
+		virtual void OnMouseReleaseEvent(QMouseEvent *e);
+		virtual void OnMouseMoveEvent(QMouseEvent *e);
+		virtual void OnWheelEvent(QWheelEvent *event);       
 
 		void SetWindowSize(int w, int h);
 
@@ -48,9 +49,8 @@ class Scene {
 
 		bool triggerRefresh = true;
 
-		double time;
-		double deltaTime;
-
+		clock_t time=0;
+		float deltaTime;
 };
 
 

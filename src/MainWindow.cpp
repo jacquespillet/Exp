@@ -1,6 +1,7 @@
 #include "MainWindow.hpp"
 
 #include "Tests/1/Scene_1.hpp"
+#include "Tests/2/Scene_2.hpp"
 #include "View3D/View3DGL.hpp"
 
 namespace KikooRenderer {
@@ -22,15 +23,28 @@ namespace KikooRenderer {
         connect(cubeButton, &QPushButton::clicked, this, [this]() {
             View3DGL* view3D= new View3DGL;
             view3D->showMaximized();
+            view3D->setAttribute(Qt::WA_DeleteOnClose);
         });
 
         QPushButton* waterButton = new QPushButton("Water");
         mainLayout->addWidget(waterButton);
         connect(waterButton, &QPushButton::clicked, this, [this]() {
             View3DGL* view3D= new View3DGL;
-            CoreEngine::Scene_1* scene = new CoreEngine::Scene_1();
+            Scene_1_::Scene_1* scene = new Scene_1_::Scene_1();
             view3D->scene = scene;
+            view3D->setAttribute(Qt::WA_DeleteOnClose);
 
+            view3D->showMaximized();
+        });
+
+        QPushButton* causticsButton = new QPushButton("WaterCaustics");
+        mainLayout->addWidget(causticsButton);
+        connect(causticsButton, &QPushButton::clicked, this, [this]() {
+            View3DGL* view3D= new View3DGL;
+            Scene_2_::Scene_2* scene = new Scene_2_::Scene_2();
+            view3D->setAttribute(Qt::WA_DeleteOnClose);
+
+            view3D->scene = scene;
             view3D->showMaximized();
         });
             
