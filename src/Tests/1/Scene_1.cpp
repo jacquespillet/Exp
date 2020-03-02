@@ -114,19 +114,20 @@ void Scene_1::Start() {
 
         quad->Enable();
 
-        fb = new Framebuffer(1200, 1200, GL_RGB, GL_RGB, GL_FLOAT, true, false, false);
+        fb = new Framebuffer(1200, 1200, GL_RGB32F, GL_RGB, GL_FLOAT, true, false, false);
     }
     {
-        vNumWaves = 15;
+        vNumWaves = 5;
         vWaveLengthMedian = 2;
-        vAmplitudesMedian = 0.1;
+        vAmplitudesMedian = 0.3;
         
-        float AOverW = vAmplitudesMedian / vWaveLengthMedian;
+        // float AOverW = vAmplitudesMedian / vWaveLengthMedian;
         for(int i=0; i<vNumWaves; i++) {
             float waveLength = GetRand(vWaveLengthMedian, 1);
+            float amplitude = GetRand(vAmplitudesMedian, 0.1);
 
             vWaveLengths.push_back(waveLength);
-            vAmplitudes.push_back(AOverW * waveLength);
+            vAmplitudes.push_back(amplitude);
             vSpeeds.push_back(GetRandBtw(0.6, 3));
             vqs.push_back(GetRandBtw(0.3, 1));
             vDirections.push_back(glm::normalize(glm::vec2(GetRandBtw(0, 1), GetRandBtw(0, 1))));
@@ -134,18 +135,21 @@ void Scene_1::Start() {
     }
 
     {
-        tNumWaves = 4;
+        tNumWaves = 5;
         tWaveLengthMedian = 5;
-        tAmplitudesMedian = 0.05;
+        tAmplitudesMedian = 0.08;
         
-        float AOverW = tAmplitudesMedian / tWaveLengthMedian;
+        // float AOverW = vAmplitudesMedian / vWaveLengthMedian;
         for(int i=0; i<tNumWaves; i++) {
-            float waveLength = GetRand(tWaveLengthMedian, 10);
+            float waveLength = GetRand(tWaveLengthMedian, 3); 
+            float amplitude = GetRand(tAmplitudesMedian, 0.04);
+
             tWaveLengths.push_back(waveLength);
-            tqs.push_back(GetRandBtw(0.3, 0.8));
-            tAmplitudes.push_back(AOverW * waveLength);
-            tSpeeds.push_back(GetRandBtw(0.6, 3));
-            tDirections.push_back(glm::normalize(glm::vec2(GetRandBtw(-1, 1), GetRandBtw(-1, 1))));
+            tAmplitudes.push_back(amplitude);
+            tSpeeds.push_back(1);
+            tqs.push_back(GetRandBtw(0.3, 1));
+            
+            tDirections.push_back(glm::normalize(tDirectionsMedian + glm::vec2(GetRandBtw(0, 0.4), GetRandBtw(0, 0.4))));
         }
     }
 
@@ -202,7 +206,7 @@ void Scene_1::OnRender() {
         ogl->glUseProgram(plane->shader.programShaderObject);
 
         Texture albedoTex;
-        albedoTex.glTex = fb->texture;
+        albedoTex.glTex = fb->textures[0];
         albedoTex.loaded = true;
         albedoTex.texIndex = GL_TEXTURE0;
         albedoTex.Use();

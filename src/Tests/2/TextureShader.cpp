@@ -35,6 +35,7 @@ Shader GetTextureShader() {
     uniform float time;
     //output
     layout(location = 0) out vec4 outputColor; 
+    layout(location = 1) out vec4 outputPos; 
     //main
     
     //Common params
@@ -50,7 +51,7 @@ Shader GetTextureShader() {
     uniform float speeds[40];    
     uniform float qs[40];    
 
-    vec3 GetGertsnerWave(vec3 pos, float _waveLength, float _amplitude, float _speed, vec2 _direction, float _k, float _q,  out vec3 normal) {
+    vec3 GetGertsnerWave(vec3 pos, float _waveLength, float _amplitude, float _speed, vec2 _direction, float _q,  out vec3 normal) {
         float Qi = _q / (_waveLength * _amplitude * numWaves);
 
         vec3 ret = pos;
@@ -77,19 +78,18 @@ Shader GetTextureShader() {
 
     void main()
     {  
-        vec3 normal = vec3(0, 0, 0);
-        vec4 newPos=vec4(fragUv.x * 10, 0, fragUv.y * 10, 1);
+        vec3 normal = vec3(0, 1, 0);
+        vec4 newPos=vec4(fragUv.x * 10 -5, 0, fragUv.y * 10 - 5, 1);
 
         for(int i=0; i<numWaves; i++) {
             vec3 waveNormal;
-            vec3 wavePos = GetGertsnerWave(newPos.xyz, waveLengths[i], amplitudes[i], speeds[i], directions[i], 0, qs[i], waveNormal); 
+            vec3 wavePos = GetGertsnerWave(newPos.xyz, waveLengths[i], amplitudes[i], speeds[i], directions[i], qs[i], waveNormal); 
             newPos += vec4(wavePos, 0);
-            normal += waveNormal;
+            normal -= waveNormal;
         }
         
-        normal = normal;
-
-        outputColor = vec4(normal, 1);
+        outputPos = newPos;
+        outputColor = vec4(normalize(normal), 1);
     }
     )";
 

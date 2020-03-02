@@ -65,6 +65,12 @@ install(FILES ${QT_BIN_DIR}/Qt5Core.dll
 
 install(DIRECTORY ${QT_BUILD_DIR}/plugins/platforms
 		DESTINATION bin
-		COMPONENT CompressionResearchDist
+		COMPONENT TesterDist
 )
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/res/
+		DESTINATION bin/res
+		COMPONENT TesterDist
+)
+
 

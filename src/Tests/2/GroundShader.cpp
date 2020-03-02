@@ -15,13 +15,16 @@ Shader GetGroundShader() {
     layout(location = 3) in vec4 color;
     //transforms
     uniform mat4 modelViewProjectionMatrix;
+    uniform mat4 modelMatrix;
 
     out vec2 fragUv;
+    out vec3 fragPos;
 
     void main()
     {
         fragUv = uv;
 
+        fragPos = (modelMatrix * vec4(position.x, position.y, position.z, 1.0f)).xyz;
         vec4 finalPosition = modelViewProjectionMatrix * vec4(position.x, position.y, position.z, 1.0f);
         gl_Position = vec4(finalPosition.x, finalPosition.y, finalPosition.z, finalPosition.w);
     }
@@ -33,19 +36,34 @@ Shader GetGroundShader() {
     //output
     layout(location = 0) out vec4 outputColor; 
     
+    in vec3 fragPos;
     in vec2 fragUv;
+
     uniform sampler2D normalMap;
+    uniform sampler2D groundAlbedo;
+    uniform sampler2D groundNormal;
+    uniform vec3 eyePos;
+    
+    const vec3 lightPos = vec3(0, 10, 10);
 
     void main()
     {
-        vec3 normal = normalize(texture(normalMap, fragUv).xyz); 
-        vec3 refracted = refract(vec3(0, 1, 0), -normal, 1.30);
-        float caustic = dot(refracted, vec3(0, 1, 0));
+        vec3 pNormal = normalize(texture(normalMap, fragUv).xyz); 
+        float caustic = dot(pNormal, vec3(0, 1, 0)) * 0.85;
         
-        // outputColor = vec4(normal, 1);
-        outputColor = texture(normalMap, fragUv); 
-        // outputColor = vec4(caustic,caustic,caustic, 1);
-    }
+        vec4 albedo = texture(groundAlbedo, fragUv);
+        vec3 normal = texture(groundNormal, fragUv).xzy * 2.0 - 1.0;
+        normal = normalize(normal * 2);
+
+        vec3 fragToLight = normalize(lightPos - fragPos);
+        vec3 fragToEye   = normalize(eyePos   - fragPos);
+
+        float NDotL = dot(normal, fragToLight);
+        float diffuseIntensity = clamp(NDotL, 0, 1);
+
+        
+        outputColor = diffuseIntensity * albedo * 0.6 + vec4(caustic,caustic,caustic, 0);
+    } 
     )";
 
     std::cout << "Plane: Compiling shader" << std::endl; 

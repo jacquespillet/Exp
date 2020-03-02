@@ -8,7 +8,10 @@
 
 namespace KikooRenderer {
 namespace Scene_2_ {
-void Scene_2::Start() {
+void Scene_2::Start(){
+    groundAlbedo = Texture("res/2/ground/red_dirt_mud_01_diff_2k.png", GL_TEXTURE1);
+    groundNormal = Texture("res/2/ground/red_dirt_mud_01_Nor_2k.png", GL_TEXTURE2);
+
     this->started = true;
     OnStart();
 
@@ -114,8 +117,7 @@ void Scene_2::Start() {
 
         quad->Enable();
 
-        fb0 = new Framebuffer(1200, 1200, GL_RGB, GL_RGB, GL_FLOAT, true, false, false);
-        fb1 = new Framebuffer(1200, 1200, GL_RGB, GL_RGB, GL_FLOAT, true, false, false);
+        fb0 = new Framebuffer(1200, 1200, GL_RGBA32F, GL_RGBA, GL_FLOAT, true, false, false, 2);
     }    
 
     {
@@ -171,32 +173,30 @@ void Scene_2::Start() {
 
     //wave settings
     {
-        vNumWaves = 15;
+        vNumWaves = 5;
         vWaveLengthMedian = 3;
-        vAmplitudesMedian = 0.1;
+        vAmplitudesMedian = 0.2;
         
-        float AOverW = vAmplitudesMedian / vWaveLengthMedian;
+        // float AOverW = vAmplitudesMedian / vWaveLengthMedian;
         for(int i=0; i<vNumWaves; i++) {
-            float waveLength = GetRand(vWaveLengthMedian, 1);
+            float waveLength = GetRand(vWaveLengthMedian, 1.5);
+            float amplitude = GetRand(vAmplitudesMedian, 0.1);
 
             vWaveLengths.push_back(waveLength);
-            vAmplitudes.push_back(AOverW * waveLength);
+            vAmplitudes.push_back(amplitude);
             vSpeeds.push_back(GetRandBtw(0.6, 3));
             vqs.push_back(GetRandBtw(0.3, 1));
-            vDirections.push_back(glm::normalize(glm::vec2(GetRandBtw(0.2, 1), GetRandBtw(0.2, 1))));
+            vDirections.push_back(glm::normalize(glm::vec2(GetRandBtw(0, 1), GetRandBtw(0, 1))));
         }
     }
 
-    // glm::vec3 refracted = glm::refract(glm::vec3(0, 1, 0), glm::vec3(0, 1, 0), 1.3f);
-    // std::cout << glm::to_string(refracted) << std::endl;
+    glm::vec3 refracted = glm::refract(glm::vec3(0, 1, 0), glm::normalize(glm::vec3(-0.5f, -1.0f, 0.0f)), 1.3f);
 }
 
 void Scene_2::OnDestroy() {
-    std::cout << "DESTROY" << std::endl;
     delete plane;
     delete ground;
     delete fb0;
-    delete fb1;
     delete quad;
 }
 
@@ -205,7 +205,7 @@ void Scene_2::OnRender() {
     _time += deltaTime;
     {
         fb0->Enable();        
-        ogl->glClearColor(0, 0, 0, 1);
+        ogl->glClearColor(0.5, 0.5, 0.5, 1);
         ogl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         ogl->glUseProgram(quad->shader.programShaderObject);
@@ -239,61 +239,65 @@ void Scene_2::OnRender() {
 
         quad->Render();
         fb0->Disable();
+        ogl->glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     {
         ogl->glUseProgram(ground->shader.programShaderObject);
 
-        Texture albedoTex;
-        albedoTex.glTex = fb0->texture;
-        albedoTex.loaded = true;
-        albedoTex.texIndex = GL_TEXTURE0;
-        albedoTex.Use();
+        Texture normalMap;
+        normalMap.glTex = fb0->textures[0];
+        normalMap.loaded = true;
+        normalMap.texIndex = GL_TEXTURE0;
+        normalMap.Use();
         
         int texLocation = ogl->glGetUniformLocation(ground->shader.programShaderObject, "normalMap");
         ogl->glUniform1i(texLocation, 0);
 
+        groundAlbedo.Use();
+        texLocation = ogl->glGetUniformLocation(ground->shader.programShaderObject, "groundAlbedo");
+        ogl->glUniform1i(texLocation, 1);
+        
+        groundNormal.Use();
+        texLocation = ogl->glGetUniformLocation(ground->shader.programShaderObject, "groundNormal");
+        ogl->glUniform1i(texLocation, 2);
+
+        int eyePosLocation = ogl->glGetUniformLocation(ground->shader.programShaderObject, "eyePos"); 
+        ogl->glUniform3fv(eyePosLocation, 1, glm::value_ptr(glm::vec3(camera->transform->position)));        
+        
         ground->Render();
+
+        ogl->glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    // {
-    //     ogl->glUseProgram(plane->shader.programShaderObject);
+    {
+        ogl->glUseProgram(plane->shader.programShaderObject);
 
-    //     int numWavesLocation = ogl->glGetUniformLocation(plane->shader.programShaderObject, "numWaves"); 
-    //     ogl->glUniform1i(numWavesLocation, vNumWaves);
-    //     for(int i=0; i<vNumWaves; i++) {
-    //         std::string varName = "waveLengths[" + std::to_string(i) + "]";
-    //         int waveLengthLocation = ogl->glGetUniformLocation(plane->shader.programShaderObject, varName.c_str()); 
-    //         ogl->glUniform1f(waveLengthLocation, vWaveLengths[i]);
-            
-    //         varName = "amplitudes[" + std::to_string(i) + "]";
-    //         int amplitudesLocation = ogl->glGetUniformLocation(plane->shader.programShaderObject, varName.c_str()); 
-    //         ogl->glUniform1f(amplitudesLocation, vAmplitudes[i]);
 
-    //         varName = "speeds[" + std::to_string(i) + "]";
-    //         int speedsLocation = ogl->glGetUniformLocation(plane->shader.programShaderObject, varName.c_str()); 
-    //         ogl->glUniform1f(speedsLocation, vSpeeds[i]);
-            
-    //         varName = "qs[" + std::to_string(i) + "]";
-    //         int qsLocation = ogl->glGetUniformLocation(plane->shader.programShaderObject, varName.c_str()); 
-    //         ogl->glUniform1f(qsLocation, vqs[i]);
-
-    //         varName = "directions[" + std::to_string(i) + "]";
-    //         int directionLocation = ogl->glGetUniformLocation(plane->shader.programShaderObject, varName.c_str()); 
-    //         ogl->glUniform2fv(directionLocation, 1, glm::value_ptr(vDirections[i]));
-    //     }
+        Texture normalMap;
+        normalMap.glTex = fb0->textures[0];
+        normalMap.loaded = true;
+        normalMap.texIndex = GL_TEXTURE0;
+        normalMap.Use();
         
-    //     int texLocation = ogl->glGetUniformLocation(plane->shader.programShaderObject, "albedoTexture");
-    //     ogl->glUniform1i(texLocation, 0);
+        int texLocation = ogl->glGetUniformLocation(plane->shader.programShaderObject, "normalMap");
+        ogl->glUniform1i(texLocation, 0);
 
-    //     int timeLocation = ogl->glGetUniformLocation(plane->shader.programShaderObject, "time"); 
-    //     ogl->glUniform1f(timeLocation, _time);
-
-    //     int eyePosLocation = ogl->glGetUniformLocation(plane->shader.programShaderObject, "eyePos"); 
-    //     ogl->glUniform3fv(eyePosLocation, 1, glm::value_ptr(glm::vec3(camera->transform->position)));
+        Texture positionMap;
+        positionMap.glTex = fb0->textures[1];
+        positionMap.loaded = true;
+        positionMap.texIndex = GL_TEXTURE1;
+        positionMap.Use();
         
-        // plane->Render();
-    // }
+        texLocation = ogl->glGetUniformLocation(plane->shader.programShaderObject, "posMap");
+        ogl->glUniform1i(texLocation, 1);
+
+        int eyePosLocation = ogl->glGetUniformLocation(plane->shader.programShaderObject, "eyePos"); 
+        ogl->glUniform3fv(eyePosLocation, 1, glm::value_ptr(glm::vec3(camera->transform->position)));        
+        
+        plane->Render();
+        ogl->glBindTexture(GL_TEXTURE_2D, 0);
+    }
     triggerRefresh = true;
 }
 

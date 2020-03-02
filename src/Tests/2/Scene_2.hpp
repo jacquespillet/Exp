@@ -23,8 +23,10 @@ public:
     Object3D* ground;
 
     Framebuffer* fb0;
-    Framebuffer* fb1;
     Object3D* quad;
+
+    Texture groundAlbedo;
+    Texture groundNormal;
 
     int vNumWaves = 10;
     float vWaveLengthMedian = 3;

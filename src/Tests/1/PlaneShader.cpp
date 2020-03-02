@@ -15,7 +15,7 @@ Shader GetShader() {
     layout(location = 3) in vec4 color;
     //transforms
     uniform mat4 modelViewProjectionMatrix;
-    uniform mat4 mMatrix;
+    uniform mat4 modelMatrix;
     uniform vec4 materialColor; 
     uniform float time;
     //outputs
@@ -92,7 +92,7 @@ Shader GetShader() {
             normal -= waveNormal;
         }
 
-        fragPos = (mMatrix * newPos).xyz;
+        fragPos = (modelMatrix * newPos).xyz;
         fragColor = vec4(0.2, 0.2, 0.7, 1);
         // fragNormal = normalize(normal);
         fragNormal = normal;

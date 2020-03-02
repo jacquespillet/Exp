@@ -32,7 +32,6 @@ Shader GetTextureShader() {
     in vec2 fragUv;
 
     //uniforms
-    uniform float time;
     //output
     layout(location = 0) out vec4 outputColor; 
     //main
@@ -43,6 +42,7 @@ Shader GetTextureShader() {
     //Gertsner params
     // const float q=0.8;
 
+    uniform float time;
     uniform int numWaves;
     uniform vec2 directions[40];
     uniform float waveLengths[40];

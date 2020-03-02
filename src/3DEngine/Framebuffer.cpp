@@ -4,7 +4,7 @@
 namespace KikooRenderer {
 
 namespace CoreEngine {
-Framebuffer::Framebuffer(int width, int height,int internalColorFormat, int colorFormat, int colorType, bool hasColor, bool hasDepth, bool multisampled) {
+Framebuffer::Framebuffer(int width, int height,int internalColorFormat, int colorFormat, int colorType, bool hasColor, bool hasDepth, bool multisampled, int numAttachments) {
     GETGL
     this->width = width;
     this->height = height;
@@ -14,6 +14,8 @@ Framebuffer::Framebuffer(int width, int height,int internalColorFormat, int colo
     this->colorType = colorType;
     this->multisampled = multisampled;
     
+    textures.resize(numAttachments);
+
     ogl->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &defaultFBO);
     // if(!multisampled) {
 
@@ -22,22 +24,35 @@ Framebuffer::Framebuffer(int width, int height,int internalColorFormat, int colo
         
         // if(hasColor) {
             // create a color attachment texture
-            ogl->glGenTextures(1, &texture);
-            ogl->glBindTexture(GL_TEXTURE_2D, texture);
+            ogl->glGenTextures(numAttachments, &textures[0]);
+            for(int i=0; i<numAttachments; i++) {
+                ogl->glBindTexture(GL_TEXTURE_2D, textures[i]);
 
-            ogl->glTexImage2D(GL_TEXTURE_2D, 0, internalColorFormat, width, height, 0, colorFormat, colorType, NULL);
-            ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                ogl->glTexImage2D(GL_TEXTURE_2D, 0, internalColorFormat, width, height, 0, colorFormat, colorType, NULL);
+                ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-            ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT ); 
-            ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT );
+                // ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT ); 
+                // ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT );
 
-            ogl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+                ogl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, textures[i], 0);
+            }
             ogl->glBindTexture(GL_TEXTURE_2D, 0);
         // } else {
         //     ogl->glDrawBuffer(GL_NONE);
         //     ogl->glReadBuffer(GL_NONE);	
         // }
+
+        if(numAttachments > 1) {
+            // unsigned int attachments[numAttachments] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+            attachments.resize(numAttachments);
+            for (int i = 0; i < numAttachments; i++)
+            {
+                attachments[i] = GL_COLOR_ATTACHMENT0 + i;
+            }
+            
+            ogl->glDrawBuffers(numAttachments, &attachments[0]); 
+        }
         
         // if(hasDepth) {
         //         //Create depth texture
@@ -159,7 +174,7 @@ void Framebuffer::Destroy() {
     GETGL
     ogl->glDeleteFramebuffers(1, &fbo);
     ogl->glDeleteTextures(1, &depthTexture);
-    ogl->glDeleteTextures(1, &texture);
+    ogl->glDeleteTextures(textures.size(), &textures[0]);
 }
 
 void Framebuffer::RenderOnObect(std::vector<Object3D*>& objectsToRender, Object3D* target) {
@@ -196,7 +211,7 @@ void Framebuffer::RenderObjectToFBO(Object3D* objectToRender) {
 void Framebuffer::RenderFBOToObject(Object3D* target, bool renderDepth) {
     GETGL
     Texture albedoTex;
-    albedoTex.glTex = renderDepth ? depthTexture : texture;
+    albedoTex.glTex = renderDepth ? depthTexture : textures[0];
     albedoTex.loaded = true;
     albedoTex.texIndex = GL_TEXTURE0;
 

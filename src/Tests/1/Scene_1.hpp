@@ -22,7 +22,7 @@ public:
     Framebuffer* fb;
     Object3D* quad;
 
-    int vNumWaves = 10;
+    int vNumWaves = 0;
     float vWaveLengthMedian = 3;
     glm::vec2 vDirectionsMedian = glm::vec2(1, 1);
     float vAmplitudesMedian = 0.1;
@@ -34,9 +34,9 @@ public:
     std::vector<float> vSpeeds;
     std::vector<glm::vec2> vDirections;
 
-    int tNumWaves = 1;
+    int tNumWaves = 0;
     float tWaveLengthMedian = 100;
-    glm::vec2 tDirectionsMedian = glm::vec2(1, 0);
+    glm::vec2 tDirectionsMedian = glm::vec2(1, 1);
     float tAmplitudesMedian = 0.1;
     float tqMedian = 0.1;
     float tSpeedMedian = 1;
