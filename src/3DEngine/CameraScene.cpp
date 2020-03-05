@@ -14,7 +14,6 @@ CameraScene::CameraScene(Scene* _scene, float _eyeDistance, float _fov, float _n
     this->nearClip = _near;
     this->farClip = _far;
     this->aspect = _aspect;
-
     UpdateProjectionMatrix();
 
     this->transform->position.x = 0;
@@ -46,8 +45,9 @@ glm::mat4 CameraScene::GetModelTransform() {
 }
 
 void CameraScene::UpdateProjectionMatrix() {
-	if(projectionType == ProjectionType::Perspective)  this->projectionMatrix = glm::perspectiveLH(this->fov, this->aspect, this->nearClip, this->farClip);     
-	else this->projectionMatrix = glm::orthoLH(-orthoFOV * this->aspect, orthoFOV * this->aspect, -orthoFOV, orthoFOV, 0.0001f, this->farClip);
+    this->projectionMatrix = glm::perspectiveLH(this->fov, this->aspect, this->nearClip, this->farClip);     
+	// if(projectionType == ProjectionType::Perspective)  this->projectionMatrix = glm::perspectiveLH(this->fov, this->aspect, this->nearClip, this->farClip);     
+	// else this->projectionMatrix = glm::orthoLH(-orthoFOV * this->aspect, orthoFOV * this->aspect, -orthoFOV, orthoFOV, 0.0001f, this->farClip);
 }
 
 void CameraScene::OnKeyReleaseEvent(QKeyEvent *e){

@@ -3,8 +3,8 @@
 #include "CameraScene.hpp"
 
 #include <QtGui/QOpenGLFunctions>
-#include <QOpenGLFunctions_3_2_Core>
-#define GLV QOpenGLFunctions_3_2_Core
+#include <QOpenGLFunctions_3_3_Core>
+#define GLV QOpenGLFunctions_3_3_Core
 #define GETGL GLV* ogl = QOpenGLContext::currentContext()->versionFunctions<GLV>(); if(ogl==NULL){std::cout << "could not get opengl context";}
 
 
@@ -82,6 +82,12 @@ void Object3D::Render() {
 	
 	int modelMatrixLocation = ogl->glGetUniformLocation(shader.programShaderObject, "modelMatrix"); 
 	ogl->glUniformMatrix4fv(modelMatrixLocation, 1, false, glm::value_ptr(mMatrix));
+
+	int viewMatrixLocation = ogl->glGetUniformLocation(shader.programShaderObject, "viewMatrix"); 
+	ogl->glUniformMatrix4fv(viewMatrixLocation, 1, false, glm::value_ptr(vMatrix));
+	
+	int projMatrixLocation = ogl->glGetUniformLocation(shader.programShaderObject, "projectionMatrix"); 
+	ogl->glUniformMatrix4fv(projMatrixLocation, 1, false, glm::value_ptr(pMatrix));
 
 	
 	//materialColor

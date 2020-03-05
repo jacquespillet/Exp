@@ -1,6 +1,8 @@
 set(MainWindowSrc
 	KikooRenderer.cpp
 	MainWindow.cpp
+
+	Common/QtWidgets.cpp
 	
 	View3D/View3DGL.cpp
 
@@ -25,6 +27,15 @@ set(MainWindowSrc
 	Tests/2/PlaneShader.cpp
 	Tests/2/GroundShader.cpp
 	Tests/2/TextureShader.cpp
+	
+	Tests/3/Scene_3.cpp
+	Tests/3/PerlinShader.cpp
+
+	Tests/4/Scene_4.cpp
+	Tests/4/PerlinShader.cpp
+	
+	Tests/5/Scene_5.cpp
+	Tests/5/GrassShader.cpp
 )
 
 add_executable(MainWindow ${MainWindowSrc})

@@ -1,8 +1,8 @@
 #include "View3DGL.hpp"
 
 
-#include <QOpenGLFunctions_3_2_Core>
-#define GLV QOpenGLFunctions_3_2_Core
+#include <QOpenGLFunctions_3_3_Core>
+#define GLV QOpenGLFunctions_3_3_Core
 #define GETGL GLV* ogl = QOpenGLContext::currentContext()->versionFunctions<GLV>(); if(ogl==NULL){std::cout << "could not get opengl context";}
 
 namespace KikooRenderer {
@@ -11,7 +11,7 @@ namespace KikooRenderer {
         QSurfaceFormat format;
         format.setDepthBufferSize(24);
         format.setStencilBufferSize(8);
-        format.setVersion(3, 2);
+        format.setVersion(3, 3);
         format.setProfile(QSurfaceFormat::CoreProfile);
         format.setSwapInterval(1);
         format.setSamples(8);
@@ -21,9 +21,14 @@ namespace KikooRenderer {
 
         timer = new QTimer(this);
 	    scene = new CoreEngine::Scene;
+        scene->parentWidget = this;
         
         setMouseTracking(true);
 
+        optionsWidget = new QWidget();
+        QVBoxLayout* l = new QVBoxLayout();
+        optionsWidget->setLayout(l);
+        optionsWidget->setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
     }
 
     View3DGL::~View3DGL() {
@@ -100,6 +105,8 @@ namespace KikooRenderer {
             timer->stop();
             scene->Destroy();
             delete scene;
+            delete optionsWidget;
+            std::cout << "HEE" << std::endl;
             doneCurrent();
         });
 
@@ -109,7 +116,6 @@ namespace KikooRenderer {
     void View3DGL::resizeGL(int w, int h) {
         windowWidth = w;
         windowHeight = h;
-
         scene->SetWindowSize(w, h);
         
         Refresh();

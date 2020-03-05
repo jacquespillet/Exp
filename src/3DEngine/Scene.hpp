@@ -7,7 +7,9 @@
 // #include "CameraScene.hpp"
 #include "MeshFilterComponent.hpp"
 
+
 namespace KikooRenderer {
+class View3DGL;
 namespace CoreEngine {
 class Object3D;
 class CameraScene;
@@ -27,6 +29,7 @@ class Scene {
 		StandardShaders standardShaders;
 		CameraScene* camera;
 
+    	KikooRenderer::View3DGL* parentWidget;
 
 		void virtual OnStart(){};
 		void virtual OnUpdate(){};

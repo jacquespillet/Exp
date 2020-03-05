@@ -4,8 +4,8 @@
 #include "TransformComponent.hpp"
 
 #include <QtGui/QOpenGLFunctions>
-#include <QOpenGLFunctions_3_2_Core>
-#define GLV QOpenGLFunctions_3_2_Core
+#include <QOpenGLFunctions_3_3_Core>
+#define GLV QOpenGLFunctions_3_3_Core
 #define GETGL GLV* ogl = QOpenGLContext::currentContext()->versionFunctions<GLV>(); if(ogl==NULL){std::cout << "could not get opengl context";}
 
 namespace KikooRenderer {
@@ -313,7 +313,7 @@ namespace CoreEngine {
     void Scene::SetWindowSize(int w, int h) {
         this->windowWidth = w;
         this->windowHeight = h;
-        float aspectRatio = w/h;
+        float aspectRatio = (float)w/(float)h;
 
         this->camera->SetAspect(aspectRatio);
         this->camera->UpdateProjectionMatrix();

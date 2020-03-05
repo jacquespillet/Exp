@@ -15,6 +15,12 @@ class MeshFilterComponent : public Component {
 			unsigned char r, g, b, a; 
 		};    
 
+        struct InstanceAttribute {
+            glm::mat4 modelMatrix;
+            glm::vec4 additionalData1;
+            glm::vec4 additionalData2;
+        };        
+
         MeshFilterComponent();
         void OnStart();
         void OnEnable();
@@ -29,6 +35,12 @@ class MeshFilterComponent : public Component {
         std::vector<int> triangles);
         void RebuildBuffers();
 
+        void SetInstanceAttributes(std::vector<InstanceAttribute> modelMatrices);
+        bool renderInstanced = false;
+        int numInstances = 100;
+        std::vector<InstanceAttribute> instanceAttributes;
+
+
     private: 
         void InitBuffers();
 
@@ -38,6 +50,8 @@ class MeshFilterComponent : public Component {
         unsigned int vertexBuffer;
         unsigned int elementBuffer;
         unsigned int vertexArrayObject;
+        
+        unsigned int matricesBuffer;
 
 };
 }

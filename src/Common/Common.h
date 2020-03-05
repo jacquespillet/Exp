@@ -52,7 +52,8 @@
 #include <Qt3DExtras/Qt3DExtras>
 #include <Qt3DAnimation/Qt3DAnimation>
 #include <Qt3DRender/QRenderSettings>
-
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QButtonGroup>
 
 //glm
 #define GLM_FORCE_INLINE 

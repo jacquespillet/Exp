@@ -22,8 +22,9 @@ class View3DGL: public QOpenGLWidget {
         View3DGL();
         ~View3DGL();
 
-		CoreEngine::Scene* scene; 
+		CoreEngine::Scene* scene;
 
+        QWidget* optionsWidget;
     protected: 
         int windowWidth;
         int windowHeight;
@@ -34,6 +35,7 @@ class View3DGL: public QOpenGLWidget {
         void initializeGL();
         void resizeGL(int w, int h);
         void paintGL();
+
 
 
         //Event Listeners
