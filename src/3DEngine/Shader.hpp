@@ -27,6 +27,8 @@ class Shader
 		int vertexShaderObject;
 		int geometryShaderObject;
 		int fragmentShaderObject;
+
+		bool shouldRecompile=true;
 		
 
 		Shader();

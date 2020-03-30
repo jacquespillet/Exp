@@ -5,6 +5,8 @@
 #include "Tests/3/Scene_3.hpp"
 #include "Tests/4/Scene_4.hpp"
 #include "Tests/5/Scene_5.hpp"
+#include "Tests/6/Scene_6.hpp"
+#include "Tests/7/Scene_7.hpp"
 #include "View3D/View3DGL.hpp"
 
 namespace KikooRenderer {
@@ -81,6 +83,28 @@ namespace KikooRenderer {
         connect(countlessGrassButton, &QPushButton::clicked, this, [this]() {
             View3DGL* view3D= new View3DGL;
             Scene_5_::Scene_5* scene = new Scene_5_::Scene_5();
+            view3D->setAttribute(Qt::WA_DeleteOnClose);
+            view3D->scene = scene;
+            view3D->scene->parentWidget = view3D;
+            view3D->showMaximized();
+        });
+
+        QPushButton* diffractionButton = new QPushButton("Diffraction");
+        mainLayout->addWidget(diffractionButton);
+        connect(diffractionButton, &QPushButton::clicked, this, [this]() {
+            View3DGL* view3D= new View3DGL;
+            Scene_6_::Scene_6* scene = new Scene_6_::Scene_6();
+            view3D->setAttribute(Qt::WA_DeleteOnClose);
+            view3D->scene = scene;
+            view3D->scene->parentWidget = view3D;
+            view3D->showMaximized();
+        });
+
+        QPushButton* sssButton = new QPushButton("Sub Surface Scattering");
+        mainLayout->addWidget(sssButton);
+        connect(sssButton, &QPushButton::clicked, this, [this]() {
+            View3DGL* view3D= new View3DGL;
+            Scene_7_::Scene_7* scene = new Scene_7_::Scene_7();
             view3D->setAttribute(Qt::WA_DeleteOnClose);
             view3D->scene = scene;
             view3D->scene->parentWidget = view3D;

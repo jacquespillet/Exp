@@ -90,8 +90,9 @@ Shader& Shader::operator=(const Shader& other)
 		fragSrc = other.fragSrc;
 		geometrySrc = other.geometrySrc;
 		name = other.name;
+		shouldRecompile = other.shouldRecompile;
 		SetId(other.identifier);
-		Compile();	
+		if(shouldRecompile) Compile();	
 	}
     return *this;
 }

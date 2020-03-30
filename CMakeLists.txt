@@ -26,6 +26,14 @@ include_directories(${GLM_INC_DIR})
 set(STBI_INC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/STB_image)
 include_directories(${STBI_INC_DIR})
 
+#assimp
+set(ASSIMP_INC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/assimp-4.1.0/build/install/include)
+set(ASSIMP_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/assimp-4.1.0/build/install/lib)
+set(ASSIMP_BIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/assimp-4.1.0/build/install/bin)
+include_directories(${ASSIMP_INC_DIR})
+link_directories(${ASSIMP_LIB_DIR})
+
+
 
 include_directories(src)
 

@@ -34,7 +34,7 @@ void CameraController::OnUpdate() {
     if(forwardPressed) {
         this->camera->transform->position += elapsedTimeMoving * forwardVec * speedFactor * this->camera->scene->deltaTime;
         camera->scene->triggerRefresh = true;
-        elapsedTimeMoving = (std::min)((float)(elapsedTimeMoving + this->camera->scene->deltaTime), 4.0f);
+        elapsedTimeMoving = (std::min)((float)(elapsedTimeMoving + this->camera->scene->deltaTime), 2.0f);
         
         this->camera->transform->hasChanged = true;
     }
@@ -42,7 +42,7 @@ void CameraController::OnUpdate() {
     if(backwardPressed) {
         this->camera->transform->position -= elapsedTimeMoving * forwardVec * speedFactor * this->camera->scene->deltaTime;
         camera->scene->triggerRefresh = true;
-        elapsedTimeMoving = (std::min)((float)(elapsedTimeMoving + this->camera->scene->deltaTime), 4.0f);
+        elapsedTimeMoving = (std::min)((float)(elapsedTimeMoving + this->camera->scene->deltaTime), 2.0f);
         
         this->camera->transform->hasChanged = true;
     }
@@ -50,7 +50,7 @@ void CameraController::OnUpdate() {
     if(rightPressed) {
         this->camera->transform->position += elapsedTimeMoving * rightVec * speedFactor * this->camera->scene->deltaTime;
         camera->scene->triggerRefresh = true;
-        elapsedTimeMoving = (std::min)((float)(elapsedTimeMoving + this->camera->scene->deltaTime), 4.0f);
+        elapsedTimeMoving = (std::min)((float)(elapsedTimeMoving + this->camera->scene->deltaTime), 2.0f);
         
         this->camera->transform->hasChanged = true;
     }
@@ -59,7 +59,7 @@ void CameraController::OnUpdate() {
     if(leftPressed) {
         this->camera->transform->position -= elapsedTimeMoving * rightVec * speedFactor * this->camera->scene->deltaTime;
         camera->scene->triggerRefresh = true;
-        elapsedTimeMoving = (std::min)((float)(elapsedTimeMoving + this->camera->scene->deltaTime), 4.0f);
+        elapsedTimeMoving = (std::min)((float)(elapsedTimeMoving + this->camera->scene->deltaTime), 2.0f);
         
         this->camera->transform->hasChanged = true;
     }

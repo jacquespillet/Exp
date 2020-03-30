@@ -4,7 +4,7 @@
 namespace KikooRenderer {
 
 namespace CoreEngine {
-Framebuffer::Framebuffer(int width, int height,int internalColorFormat, int colorFormat, int colorType, bool hasColor, bool hasDepth, bool multisampled, int numAttachments) {
+Framebuffer::Framebuffer(int width, int height,int internalColorFormat, int colorFormat, int colorType, bool hasColor, bool hasDepth, bool multisampled, int numAttachments, bool enableFilter) {
     GETGL
     this->width = width;
     this->height = height;
@@ -13,7 +13,7 @@ Framebuffer::Framebuffer(int width, int height,int internalColorFormat, int colo
     this->internalColorFormat = internalColorFormat;
     this->colorType = colorType;
     this->multisampled = multisampled;
-    
+
     textures.resize(numAttachments);
 
     ogl->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &defaultFBO);
@@ -22,15 +22,21 @@ Framebuffer::Framebuffer(int width, int height,int internalColorFormat, int colo
         ogl->glGenFramebuffers(1, &fbo);
         ogl->glBindFramebuffer(GL_FRAMEBUFFER, fbo);
         
-        // if(hasColor) {
+        if(hasColor) {
             // create a color attachment texture
             ogl->glGenTextures(numAttachments, &textures[0]);
             for(int i=0; i<numAttachments; i++) {
                 ogl->glBindTexture(GL_TEXTURE_2D, textures[i]);
 
                 ogl->glTexImage2D(GL_TEXTURE_2D, 0, internalColorFormat, width, height, 0, colorFormat, colorType, NULL);
-                ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+                if(enableFilter) {
+                    ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+                    ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                } else {
+                    ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                    ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                }                
 
                 // ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT ); 
                 // ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT );
@@ -38,10 +44,10 @@ Framebuffer::Framebuffer(int width, int height,int internalColorFormat, int colo
                 ogl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, textures[i], 0);
             }
             ogl->glBindTexture(GL_TEXTURE_2D, 0);
-        // } else {
-        //     ogl->glDrawBuffer(GL_NONE);
-        //     ogl->glReadBuffer(GL_NONE);	
-        // }
+        } else {
+            ogl->glDrawBuffer(GL_NONE);
+            ogl->glReadBuffer(GL_NONE);	
+        }
 
         if(numAttachments > 1) {
             // unsigned int attachments[numAttachments] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
@@ -54,29 +60,35 @@ Framebuffer::Framebuffer(int width, int height,int internalColorFormat, int colo
             ogl->glDrawBuffers(numAttachments, &attachments[0]); 
         }
         
-        // if(hasDepth) {
-        //         //Create depth texture
-        //         ogl->glGenTextures(1, &depthTexture);
-        //         ogl->glBindTexture(GL_TEXTURE_2D, depthTexture);
-        //         ogl->glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-        //         ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        //         ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        if(hasDepth) {
+                //Create depth texture
+                ogl->glGenTextures(1, &depthTexture);
+                ogl->glBindTexture(GL_TEXTURE_2D, depthTexture);
+                ogl->glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
                 
-        //         ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER); 
-        //         ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        //         float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-        //         ogl->glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor); 
+                if(enableFilter) {
+                    ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+                    ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                } else {
+                    ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                    ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                }                
 
-        //         ogl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
-        //         ogl->glBindTexture(GL_TEXTURE_2D, 0);
-        // } else {
+                // ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER); 
+                // ogl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+                // float borderColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+                // ogl->glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor); 
+
+                ogl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
+                ogl->glBindTexture(GL_TEXTURE_2D, 0);
+        } else {
             // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
             ogl->glGenRenderbuffers(1, &rbo);
             ogl->glBindRenderbuffer(GL_RENDERBUFFER, rbo);
             ogl->glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height); // use a single renderbuffer object for both a depth AND stencil buffer.
             ogl->glBindRenderbuffer(GL_RENDERBUFFER, 0);
             ogl->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
-        // }
+        }
 
         // ogl->glEnable(GL_CULL_FACE); 
         // ogl->glCullFace(GL_BACK);

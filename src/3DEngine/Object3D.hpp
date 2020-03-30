@@ -22,6 +22,7 @@ class Object3D {
         bool enabled;
 
         TransformComponent* transform;
+        glm::mat4 mvpMatrix;
 
         Object3D(std::string name, Scene* scene, Shader _shader);
         void AddComponent(Component* component);

@@ -2,6 +2,8 @@
 #include "Util.hpp"
 #include "CameraScene.hpp"
 #include "TransformComponent.hpp"
+#include "BaseObjects.hpp"
+#include "View3D/View3DGL.hpp"
 
 #include <QtGui/QOpenGLFunctions>
 #include <QOpenGLFunctions_3_3_Core>
@@ -18,16 +20,18 @@ namespace CoreEngine {
 
     void Scene::Start() {
         standardShaders.Compile();
-
         this->started = true;
         OnStart();
+    }
+
+    void Scene::OnStart() {
 
         //Start each Object3D in scene
         Object3D* newObject = new Object3D("Triangle", this, standardShaders.unlitMeshShader);
-        std::vector<glm::dvec3> vertex;
-        std::vector<glm::dvec3> normals;
-        std::vector<glm::dvec2> uv;
-        std::vector<glm::dvec4> colors;
+        std::vector<glm::vec3> vertex;
+        std::vector<glm::vec3> normals;
+        std::vector<glm::vec2> uv;
+        std::vector<glm::vec4> colors;
         std::vector<int> triangles;
 
         //
@@ -35,40 +39,40 @@ namespace CoreEngine {
         //
 
         //Front
-        vertex.push_back(glm::dvec3(-0.5, -0.5, -0.5)); //bottom left
-        vertex.push_back(glm::dvec3(-0.5, 0.5, -0.5)); // top left
-        vertex.push_back(glm::dvec3(0.5, 0.5, -0.5)); //Top right
-        vertex.push_back(glm::dvec3(0.5, -0.5, -0.5)); //Bottom right
+        vertex.push_back(glm::vec3(-0.5, -0.5, -0.5)); //bottom left
+        vertex.push_back(glm::vec3(-0.5, 0.5, -0.5)); // top left
+        vertex.push_back(glm::vec3(0.5, 0.5, -0.5)); //Top right
+        vertex.push_back(glm::vec3(0.5, -0.5, -0.5)); //Bottom right
 
         // Back
-        vertex.push_back(glm::dvec3(0.5, -0.5, 0.5)); //Bottom Left
-        vertex.push_back(glm::dvec3(0.5, 0.5, 0.5)); //Top left
-        vertex.push_back(glm::dvec3(-0.5, 0.5, 0.5)); // top right
-        vertex.push_back(glm::dvec3(-0.5, -0.5, 0.5)); //bottom right
+        vertex.push_back(glm::vec3(0.5, -0.5, 0.5)); //Bottom Left
+        vertex.push_back(glm::vec3(0.5, 0.5, 0.5)); //Top left
+        vertex.push_back(glm::vec3(-0.5, 0.5, 0.5)); // top right
+        vertex.push_back(glm::vec3(-0.5, -0.5, 0.5)); //bottom right
 
         // Right
-        vertex.push_back(glm::dvec3(0.5, -0.5, 0.5)); // Bottom left
-        vertex.push_back(glm::dvec3(0.5, 0.5, 0.5)); //Top left
-        vertex.push_back(glm::dvec3(0.5, 0.5, -0.5)); //Top right
-        vertex.push_back(glm::dvec3(0.5, -0.5, -0.5)); //Bottom right
+        vertex.push_back(glm::vec3(0.5, -0.5, 0.5)); // Bottom left
+        vertex.push_back(glm::vec3(0.5, 0.5, 0.5)); //Top left
+        vertex.push_back(glm::vec3(0.5, 0.5, -0.5)); //Top right
+        vertex.push_back(glm::vec3(0.5, -0.5, -0.5)); //Bottom right
 
         // Left
-        vertex.push_back(glm::dvec3(-0.5, -0.5, -0.5)); //Bottom Left
-        vertex.push_back(glm::dvec3(-0.5, 0.5, -0.5)); //Top left
-        vertex.push_back(glm::dvec3(-0.5, 0.5, 0.5)); //Top right
-        vertex.push_back(glm::dvec3(-0.5, -0.5, 0.5)); // Bottom right
+        vertex.push_back(glm::vec3(-0.5, -0.5, -0.5)); //Bottom Left
+        vertex.push_back(glm::vec3(-0.5, 0.5, -0.5)); //Top left
+        vertex.push_back(glm::vec3(-0.5, 0.5, 0.5)); //Top right
+        vertex.push_back(glm::vec3(-0.5, -0.5, 0.5)); // Bottom right
 
         // Top
-        vertex.push_back(glm::dvec3(-0.5, 0.5, 0.5)); //Bottom Left
-        vertex.push_back(glm::dvec3(-0.5, 0.5, -0.5)); //Top Left
-        vertex.push_back(glm::dvec3(0.5, 0.5, -0.5)); // top right
-        vertex.push_back(glm::dvec3(0.5, 0.5, 0.5)); //bottom right
+        vertex.push_back(glm::vec3(-0.5, 0.5, 0.5)); //Bottom Left
+        vertex.push_back(glm::vec3(-0.5, 0.5, -0.5)); //Top Left
+        vertex.push_back(glm::vec3(0.5, 0.5, -0.5)); // top right
+        vertex.push_back(glm::vec3(0.5, 0.5, 0.5)); //bottom right
 
         // Bottom ?????
-        vertex.push_back(glm::dvec3( 0.5, -0.5,  0.5)); //bottom left
-        vertex.push_back(glm::dvec3( 0.5, -0.5, -0.5)); // top left
-        vertex.push_back(glm::dvec3(-0.5, -0.5, -0.5)); //Top right
-        vertex.push_back(glm::dvec3(-0.5, -0.5,  0.5)); //Bottom right
+        vertex.push_back(glm::vec3( 0.5, -0.5,  0.5)); //bottom left
+        vertex.push_back(glm::vec3( 0.5, -0.5, -0.5)); // top left
+        vertex.push_back(glm::vec3(-0.5, -0.5, -0.5)); //Top right
+        vertex.push_back(glm::vec3(-0.5, -0.5,  0.5)); //Bottom right
 
 
         //
@@ -76,40 +80,40 @@ namespace CoreEngine {
         //
 
         //Front
-        normals.push_back(glm::dvec3(0, 0, 1));
-        normals.push_back(glm::dvec3(0, 0, 1));
-        normals.push_back(glm::dvec3(0, 0, 1));
-        normals.push_back(glm::dvec3(0, 0, 1));
+        normals.push_back(glm::vec3(0, 0, 1));
+        normals.push_back(glm::vec3(0, 0, 1));
+        normals.push_back(glm::vec3(0, 0, 1));
+        normals.push_back(glm::vec3(0, 0, 1));
         
         //Back
-        normals.push_back(glm::dvec3(0, 0, -1));
-        normals.push_back(glm::dvec3(0, 0, -1));
-        normals.push_back(glm::dvec3(0, 0, -1));
-        normals.push_back(glm::dvec3(0, 0, -1));
+        normals.push_back(glm::vec3(0, 0, -1));
+        normals.push_back(glm::vec3(0, 0, -1));
+        normals.push_back(glm::vec3(0, 0, -1));
+        normals.push_back(glm::vec3(0, 0, -1));
         
         //Right
-        normals.push_back(glm::dvec3(1, 0, 0));
-        normals.push_back(glm::dvec3(1, 0, 0));
-        normals.push_back(glm::dvec3(1, 0, 0));
-        normals.push_back(glm::dvec3(1, 0, 0));
+        normals.push_back(glm::vec3(1, 0, 0));
+        normals.push_back(glm::vec3(1, 0, 0));
+        normals.push_back(glm::vec3(1, 0, 0));
+        normals.push_back(glm::vec3(1, 0, 0));
 
         //Left
-        normals.push_back(glm::dvec3(-1, 0, 0));
-        normals.push_back(glm::dvec3(-1, 0, 0));
-        normals.push_back(glm::dvec3(-1, 0, 0));
-        normals.push_back(glm::dvec3(-1, 0, 0));
+        normals.push_back(glm::vec3(-1, 0, 0));
+        normals.push_back(glm::vec3(-1, 0, 0));
+        normals.push_back(glm::vec3(-1, 0, 0));
+        normals.push_back(glm::vec3(-1, 0, 0));
         
         //Top
-        normals.push_back(glm::dvec3(0, 1, 0));
-        normals.push_back(glm::dvec3(0, 1, 0));
-        normals.push_back(glm::dvec3(0, 1, 0));
-        normals.push_back(glm::dvec3(0, 1, 0));
+        normals.push_back(glm::vec3(0, 1, 0));
+        normals.push_back(glm::vec3(0, 1, 0));
+        normals.push_back(glm::vec3(0, 1, 0));
+        normals.push_back(glm::vec3(0, 1, 0));
 
         //Bottom
-        normals.push_back(glm::dvec3(0, -1, 0));
-        normals.push_back(glm::dvec3(0, -1, 0));
-        normals.push_back(glm::dvec3(0, -1, 0));
-        normals.push_back(glm::dvec3(0, -1, 0));
+        normals.push_back(glm::vec3(0, -1, 0));
+        normals.push_back(glm::vec3(0, -1, 0));
+        normals.push_back(glm::vec3(0, -1, 0));
+        normals.push_back(glm::vec3(0, -1, 0));
 
 
         //
@@ -117,40 +121,40 @@ namespace CoreEngine {
         //
 
         //Front
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
         
         //Back
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
         
         //Right
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
         
         //Left
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
         
         //Top
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
         
         //Bottom
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
-        uv.push_back(glm::dvec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
+        uv.push_back(glm::vec2(0, 0));
 
 
         //
@@ -158,40 +162,40 @@ namespace CoreEngine {
         //
 
         //Front
-        colors.push_back(glm::dvec4(255.0, 0, 0, 255));
-        colors.push_back(glm::dvec4(0.0, 255, 0, 255));
-        colors.push_back(glm::dvec4(0.0, 0, 255, 255));
-        colors.push_back(glm::dvec4(255.0, 0, 0, 255));
+        colors.push_back(glm::vec4(255.0, 0, 0, 255));
+        colors.push_back(glm::vec4(0.0, 255, 0, 255));
+        colors.push_back(glm::vec4(0.0, 0, 255, 255));
+        colors.push_back(glm::vec4(255.0, 0, 0, 255));
         
         //Back
-        colors.push_back(glm::dvec4(255.0, 0, 0, 255));
-        colors.push_back(glm::dvec4(0.0, 255, 0, 255));
-        colors.push_back(glm::dvec4(0.0, 0, 255, 255));
-        colors.push_back(glm::dvec4(255.0, 0, 0, 255));
+        colors.push_back(glm::vec4(255.0, 0, 0, 255));
+        colors.push_back(glm::vec4(0.0, 255, 0, 255));
+        colors.push_back(glm::vec4(0.0, 0, 255, 255));
+        colors.push_back(glm::vec4(255.0, 0, 0, 255));
         
         //Right
-        colors.push_back(glm::dvec4(255.0, 0, 0, 255));
-        colors.push_back(glm::dvec4(0.0, 255, 0, 255));
-        colors.push_back(glm::dvec4(0.0, 0, 255, 255));
-        colors.push_back(glm::dvec4(255.0, 0, 0, 255));
+        colors.push_back(glm::vec4(255.0, 0, 0, 255));
+        colors.push_back(glm::vec4(0.0, 255, 0, 255));
+        colors.push_back(glm::vec4(0.0, 0, 255, 255));
+        colors.push_back(glm::vec4(255.0, 0, 0, 255));
         
         //Left
-        colors.push_back(glm::dvec4(255.0, 0, 0, 255));
-        colors.push_back(glm::dvec4(0.0, 255, 0, 255));
-        colors.push_back(glm::dvec4(0.0, 0, 255, 255));
-        colors.push_back(glm::dvec4(255.0, 0, 0, 255));
+        colors.push_back(glm::vec4(255.0, 0, 0, 255));
+        colors.push_back(glm::vec4(0.0, 255, 0, 255));
+        colors.push_back(glm::vec4(0.0, 0, 255, 255));
+        colors.push_back(glm::vec4(255.0, 0, 0, 255));
         
         //Top
-        colors.push_back(glm::dvec4(255.0, 0, 0, 255));
-        colors.push_back(glm::dvec4(0.0, 255, 0, 255));
-        colors.push_back(glm::dvec4(0.0, 0, 255, 255));
-        colors.push_back(glm::dvec4(255.0, 0, 0, 255));
+        colors.push_back(glm::vec4(255.0, 0, 0, 255));
+        colors.push_back(glm::vec4(0.0, 255, 0, 255));
+        colors.push_back(glm::vec4(0.0, 0, 255, 255));
+        colors.push_back(glm::vec4(255.0, 0, 0, 255));
         
         //Bottom
-        colors.push_back(glm::dvec4(255.0, 0, 0, 255));
-        colors.push_back(glm::dvec4(0.0, 255, 0, 255));
-        colors.push_back(glm::dvec4(0.0, 0, 255, 255));
-        colors.push_back(glm::dvec4(255.0, 0, 0, 255));
+        colors.push_back(glm::vec4(255.0, 0, 0, 255));
+        colors.push_back(glm::vec4(0.0, 255, 0, 255));
+        colors.push_back(glm::vec4(0.0, 0, 255, 255));
+        colors.push_back(glm::vec4(255.0, 0, 0, 255));
 
 
         //
@@ -255,6 +259,7 @@ namespace CoreEngine {
         newObject->transform = transform;
 
         objects3D.push_back(newObject);
+
     }
 
     void Scene::Enable() {
@@ -264,11 +269,18 @@ namespace CoreEngine {
             objects3D[i]->Enable();
         }
     }
+    
+    void Scene::OnUpdate() {
+
+    }
 
     void Scene::Render() {
         GETGL
-        ogl->glClearColor(0, 0, 0, 1);
+        ogl->glClearColor(bgColor.x, bgColor.y, bgColor.z, 1);
         ogl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        if(hasSkybox) skyboxCube->Render();
+        
         OnRender();
         //Render each object
         for(int i=0; i<objects3D.size(); i++) {
@@ -309,14 +321,22 @@ namespace CoreEngine {
         this->camera->OnWheelEvent(e);
     }   
 
+    void Scene::SetSkybox(std::vector<std::string> filenames) {
+        parentWidget->makeCurrent();
+        skyboxCubemap = Cubemap(filenames);
+        hasSkybox = true;
+        parentWidget->doneCurrent();
+        triggerRefresh = true;
+    }    
+
     
     void Scene::SetWindowSize(int w, int h) {
         this->windowWidth = w;
         this->windowHeight = h;
         float aspectRatio = (float)w/(float)h;
 
-        this->camera->SetAspect(aspectRatio);
-        this->camera->UpdateProjectionMatrix();
+        // this->camera->SetAspect(aspectRatio);
+        // this->camera->UpdateProjectionMatrix();
     }
 }
 }

@@ -13,11 +13,11 @@ class TransformComponent : public Component {
         void OnUpdate();
         void OnRender();
 
-        glm::dvec3 position;
-        glm::dvec3 rotation;
-        glm::dvec3 scale;
+        glm::vec3 position;
+        glm::vec3 rotation;
+        glm::vec3 scale;
 
-        glm::dmat4 GetModelMatrix(); 
+        glm::mat4 GetModelMatrix(); 
 
         bool hasChanged;
 };

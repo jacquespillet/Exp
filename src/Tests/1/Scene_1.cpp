@@ -8,10 +8,7 @@
 
 namespace KikooRenderer {
 namespace Scene_1_ {
-void Scene_1::Start() {
-    this->started = true;
-    OnStart();
-
+void Scene_1::OnStart() {
     camera = new CameraScene(this, 1.0, glm::radians(70.0f), 0.1, 1000.0, 1.0);
     camera->transform->position = glm::vec3(0, 10, -15);
     camera->transform->rotation.x = glm::radians(10.0f);
@@ -19,10 +16,10 @@ void Scene_1::Start() {
     {
         //Start each Object3D in scene
         plane = new Object3D("Triangle", this, GetShader());
-        std::vector<glm::dvec3> vertex;
-        std::vector<glm::dvec3> normals;
-        std::vector<glm::dvec2> uv;
-        std::vector<glm::dvec4> colors;
+        std::vector<glm::vec3> vertex;
+        std::vector<glm::vec3> normals;
+        std::vector<glm::vec2> uv;
+        std::vector<glm::vec4> colors;
         std::vector<int> triangles;
 
         float width=10;
@@ -71,10 +68,10 @@ void Scene_1::Start() {
     {
         //Start each Object3D in scene
         quad = new Object3D("Triangle", this, GetTextureShader());
-        std::vector<glm::dvec3> vertex;
-        std::vector<glm::dvec3> normals;
-        std::vector<glm::dvec2> uv;
-        std::vector<glm::dvec4> colors;
+        std::vector<glm::vec3> vertex;
+        std::vector<glm::vec3> normals;
+        std::vector<glm::vec2> uv;
+        std::vector<glm::vec4> colors;
         std::vector<int> triangles;
         
         vertex.push_back(glm::vec3(-1.0, -1.0, 0.1)); //bottom left

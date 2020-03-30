@@ -11,7 +11,7 @@ class Scene_1 : public Scene {
 public:
     Scene_1(){}
 
-    virtual void Start();
+    void OnStart();
     void virtual OnUpdate();
     void virtual OnRender();
     void virtual OnDestroy();

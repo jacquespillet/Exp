@@ -12,7 +12,7 @@ class Scene_3 : public CoreEngine::Scene {
 public:
     Scene_3(){}
 
-    void virtual Start();
+    void OnStart();
     void virtual OnUpdate();
     void virtual OnRender();
     void virtual OnDestroy();

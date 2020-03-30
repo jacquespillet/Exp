@@ -49,7 +49,7 @@ void Object3D::Render() {
 	// glm::mat4 mMatrix = glm::mat4(1.0);
 	glm::mat4 vMatrix = scene->camera->GetViewMatrix();
 	glm::mat4 pMatrix = scene->camera->GetProjectionMatrix();
-	glm::mat4 mvpMatrix = pMatrix * vMatrix * mMatrix;
+	mvpMatrix = pMatrix * vMatrix * mMatrix;
 
 
 	//
@@ -88,6 +88,17 @@ void Object3D::Render() {
 	
 	int projMatrixLocation = ogl->glGetUniformLocation(shader.programShaderObject, "projectionMatrix"); 
 	ogl->glUniformMatrix4fv(projMatrixLocation, 1, false, glm::value_ptr(pMatrix));
+
+	int hasSkyboxLocation = ogl->glGetUniformLocation(shader.programShaderObject, "hasSkybox");
+	ogl->glUniform1i(hasSkyboxLocation, scene->hasSkybox);
+
+	if(scene->hasSkybox) {
+		ogl->glActiveTexture(GL_TEXTURE8);
+		ogl->glBindTexture(GL_TEXTURE_CUBE_MAP, scene->skyboxCubemap.GetTextureID());
+		
+		int skyboxLocation = ogl->glGetUniformLocation(shader.programShaderObject, "skybox");
+		ogl->glUniform1i(skyboxLocation, 8);
+	}
 
 	
 	//materialColor

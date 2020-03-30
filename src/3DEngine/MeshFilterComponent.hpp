@@ -28,10 +28,10 @@ class MeshFilterComponent : public Component {
         void OnRender();
         
 
-        void LoadFromBuffers(std::vector<glm::dvec3> vertex,
-        std::vector<glm::dvec3> normals,
-        std::vector<glm::dvec2> uv,
-        std::vector<glm::dvec4> colors,
+        void LoadFromBuffers(std::vector<glm::vec3> vertex,
+        std::vector<glm::vec3> normals,
+        std::vector<glm::vec2> uv,
+        std::vector<glm::vec4> colors,
         std::vector<int> triangles);
         void RebuildBuffers();
 

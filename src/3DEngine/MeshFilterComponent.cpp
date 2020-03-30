@@ -43,10 +43,10 @@ void MeshFilterComponent::OnRender(){
 } 
 
 
-void MeshFilterComponent::LoadFromBuffers(std::vector<glm::dvec3> _vertex,
-std::vector<glm::dvec3> _normals,
-std::vector<glm::dvec2> _uv,
-std::vector<glm::dvec4> _colors,
+void MeshFilterComponent::LoadFromBuffers(std::vector<glm::vec3> _vertex,
+std::vector<glm::vec3> _normals,
+std::vector<glm::vec2> _uv,
+std::vector<glm::vec4> _colors,
 std::vector<int> _triangles) {
     this->triangles = _triangles;
     for(int i=0; i<_vertex.size(); i++) {

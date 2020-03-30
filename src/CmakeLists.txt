@@ -3,6 +3,7 @@ set(MainWindowSrc
 	MainWindow.cpp
 
 	Common/QtWidgets.cpp
+	Common/ModelLoader.cpp
 	
 	View3D/View3DGL.cpp
 
@@ -18,6 +19,8 @@ set(MainWindowSrc
 	3DEngine/Util.cpp
 	3DEngine/Texture.cpp
 	3DEngine/Framebuffer.cpp
+	3DEngine/Cubemap.cpp
+	3DEngine/BaseObjects.cpp
 
 	Tests/1/Scene_1.cpp
 	Tests/1/PlaneShader.cpp
@@ -36,11 +39,19 @@ set(MainWindowSrc
 	
 	Tests/5/Scene_5.cpp
 	Tests/5/GrassShader.cpp
+	
+	Tests/6/Scene_6.cpp
+	Tests/6/DiffractionShader.cpp
+	
+	Tests/7/Scene_7.cpp
+	Tests/7/ObjectShader.cpp
+
 )
 
 add_executable(MainWindow ${MainWindowSrc})
 #target_link_libraries(MainWindow lib file name)
 target_link_libraries(MainWindow Qt5::Core Qt5::Widgets Qt5::OpenGL Qt5::3DCore Qt5::3DExtras Qt5::3DRender Qt5::3DInput)
+target_link_libraries(MainWindow assimp-vc140-mt)
 # target_link_libraries(MainWindow debug Qt5Cored optimized Qt5Core)
 # target_link_libraries(MainWindow debug Qt5Guid optimized Qt5Gui)
 # target_link_libraries(MainWindow debug Qt5Widgetsd optimized Qt5Widgets)

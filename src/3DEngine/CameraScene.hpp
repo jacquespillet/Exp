@@ -62,6 +62,7 @@ class CameraScene : public Object3D{
 
         bool sortObjects = true;
 
+		ProjectionType projectionType;
     protected:
         float eyeDistance;
         float fov;
@@ -70,7 +71,6 @@ class CameraScene : public Object3D{
         float aspect;
         glm::mat4 projectionMatrix;
 
-		ProjectionType projectionType;
         glm::mat4 viewMatrix;
         glm::mat4 previousViewMatrix;
 

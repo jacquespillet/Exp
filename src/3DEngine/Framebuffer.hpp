@@ -2,7 +2,7 @@
 
 #include "Common/Common.h"
 #include "Texture.hpp"
-
+  
 #include <QtGui/QOpenGLFunctions>
 #include <QOpenGLFunctions_3_3_Core>
 #define GLV QOpenGLFunctions_3_3_Core
@@ -15,7 +15,7 @@ class Object3D;
 class Framebuffer {
 public: 
 	Framebuffer(){}
-	Framebuffer(int width=800, int height = 600, int internalColorFormat = GL_RGB, int colorFormat = GL_RGB, int colorType = GL_UNSIGNED_BYTE, bool hasColor=true, bool hasDepth=true, bool multisampled=false, int numAttachments=1);
+	Framebuffer(int width=800, int height = 600, int internalColorFormat = GL_RGB, int colorFormat = GL_RGB, int colorType = GL_UNSIGNED_BYTE, bool hasColor=true, bool hasDepth=true, bool multisampled=false, int numAttachments=1, bool enableFilter=false);
 	~Framebuffer();
 	void Enable();
 	void Disable();

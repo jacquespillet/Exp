@@ -16,14 +16,14 @@ CameraScene::CameraScene(Scene* _scene, float _eyeDistance, float _fov, float _n
     this->aspect = _aspect;
     UpdateProjectionMatrix();
 
-    this->transform->position.x = 0;
-    this->transform->position.y = 0;
-    this->transform->position.z = -3;
+    // this->transform->position.x = 0;
+    // this->transform->position.y = 0;
+    // this->transform->position.z = -3;
 
 	projectionType = ProjectionType::Perspective;
     viewMatrix = glm::inverse(this->transform->GetModelMatrix()); 
 
-    orthoFOV = 10;
+    orthoFOV = _fov;
 
     cameraController = new CameraController(this);
 }
@@ -45,9 +45,9 @@ glm::mat4 CameraScene::GetModelTransform() {
 }
 
 void CameraScene::UpdateProjectionMatrix() {
-    this->projectionMatrix = glm::perspectiveLH(this->fov, this->aspect, this->nearClip, this->farClip);     
-	// if(projectionType == ProjectionType::Perspective)  this->projectionMatrix = glm::perspectiveLH(this->fov, this->aspect, this->nearClip, this->farClip);     
-	// else this->projectionMatrix = glm::orthoLH(-orthoFOV * this->aspect, orthoFOV * this->aspect, -orthoFOV, orthoFOV, 0.0001f, this->farClip);
+    // this->projectionMatrix = glm::perspectiveLH(this->fov, this->aspect, this->nearClip, this->farClip);     
+	if(projectionType == ProjectionType::Perspective)  this->projectionMatrix = glm::perspectiveLH(this->fov, this->aspect, this->nearClip, this->farClip);     
+	else this->projectionMatrix = glm::orthoLH(-orthoFOV, orthoFOV, -orthoFOV, orthoFOV, this->nearClip, this->farClip);
 }
 
 void CameraScene::OnKeyReleaseEvent(QKeyEvent *e){
@@ -167,6 +167,7 @@ float CameraScene::GetOrthoFOV() {
 
 void  CameraScene::SetOrthoFOV(float value) {
     this->orthoFOV = value;
+    UpdateProjectionMatrix();
 }
 
 float CameraScene::GetSpeedFactor() {

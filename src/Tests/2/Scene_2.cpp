@@ -8,12 +8,9 @@
 
 namespace KikooRenderer {
 namespace Scene_2_ {
-void Scene_2::Start(){
+void Scene_2::OnStart(){
     groundAlbedo = Texture("res/2/ground/red_dirt_mud_01_diff_2k.png", GL_TEXTURE1);
     groundNormal = Texture("res/2/ground/red_dirt_mud_01_Nor_2k.png", GL_TEXTURE2);
-
-    this->started = true;
-    OnStart();
 
     camera = new CameraScene(this, 1.0, glm::radians(70.0f), 0.1, 1000.0, 1.0);
     camera->transform->position = glm::vec3(0, 10, -15);
@@ -22,10 +19,10 @@ void Scene_2::Start(){
     {
         //Start each Object3D in scene
         plane = new Object3D("Triangle", this, GetShader());
-        std::vector<glm::dvec3> vertex;
-        std::vector<glm::dvec3> normals;
-        std::vector<glm::dvec2> uv;
-        std::vector<glm::dvec4> colors;
+        std::vector<glm::vec3> vertex;
+        std::vector<glm::vec3> normals;
+        std::vector<glm::vec2> uv;
+        std::vector<glm::vec4> colors;
         std::vector<int> triangles;
 
         float width=10;
@@ -74,10 +71,10 @@ void Scene_2::Start(){
     {
         //Start each Object3D in scene
         quad = new Object3D("Triangle", this, GetTextureShader());
-        std::vector<glm::dvec3> vertex;
-        std::vector<glm::dvec3> normals;
-        std::vector<glm::dvec2> uv;
-        std::vector<glm::dvec4> colors;
+        std::vector<glm::vec3> vertex;
+        std::vector<glm::vec3> normals;
+        std::vector<glm::vec2> uv;
+        std::vector<glm::vec4> colors;
         std::vector<int> triangles;
         
         vertex.push_back(glm::vec3(-1.0, -1.0, 0.1)); //bottom left
@@ -123,10 +120,10 @@ void Scene_2::Start(){
     {
         //Start each Object3D in scene
         ground = new Object3D("Triangle", this, GetGroundShader());
-        std::vector<glm::dvec3> vertex;
-        std::vector<glm::dvec3> normals;
-        std::vector<glm::dvec2> uv;
-        std::vector<glm::dvec4> colors;
+        std::vector<glm::vec3> vertex;
+        std::vector<glm::vec3> normals;
+        std::vector<glm::vec2> uv;
+        std::vector<glm::vec4> colors;
         std::vector<int> triangles;
         
         vertex.push_back(glm::vec3(-0.5, 0.5, -0.5)); //bottom left

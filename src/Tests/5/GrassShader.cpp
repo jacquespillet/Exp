@@ -19,8 +19,6 @@ Shader GetGrassShader() {
     //transforms
     // uniform mat4 modelViewProjectionMatrix;
     // uniform mat4 modelMatrix;
-    uniform mat4 viewMatrix;
-    uniform mat4 projectionMatrix;
 
     out vec2 fragUv;
     out vec3 fragPos;
@@ -28,11 +26,17 @@ Shader GetGrassShader() {
     void main()
     {
         fragUv = uv;
-        mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
+        float dispx = additionalData1.x;
+        float dispz = additionalData1.z;
 
+        vec4 localPosition = vec4(position.x, position.y, position.z, 1.0f);
+        
         fragPos = (modelMatrix * vec4(position.x, position.y, position.z, 1.0f)).xyz;
-        vec4 finalPosition = mvp * vec4(position.x, position.y, position.z, 1.0f);
+        vec4 finalPosition = modelMatrix * localPosition;
         gl_Position = vec4(finalPosition.x, finalPosition.y, finalPosition.z, finalPosition.w);
+        
+        gl_Position.x += position.y * dispx;
+        // gl_Position.z += position.y * dispz;
     }
     )";
 

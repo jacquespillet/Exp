@@ -17,17 +17,18 @@ layout(location = 2) in vec2 uv;
 layout(location = 3) in vec4 color;
 //transforms
 uniform mat4 modelViewProjectionMatrix;
-uniform vec4 materialColor; 
+uniform mat4 modelMatrix;
 //outputs
 out vec4 fragmentColor;  
-out float fragmentDepth;
+out vec3 fragPos;
 //main
 void main()
 {
 	//compute outputs
 	fragmentColor = color;
+	fragPos = (modelMatrix * vec4(position.x, position.y, position.z, 1.0f)).xyz;
 	vec4 finalPosition = modelViewProjectionMatrix * vec4(position.x, position.y, position.z, 1.0f);
-	gl_Position = vec4(finalPosition.x, finalPosition.y, finalPosition.z, finalPosition.w);
+	gl_Position = finalPosition;
 }
 )";
 
@@ -35,13 +36,21 @@ unlitMeshShader.fragSrc = R"(
 //inputs
 #version 440
 in vec4 fragmentColor; 
-//uniforms
+in vec3 fragPos; 
+
 //output
 layout(location = 0) out vec4 outputColor; 
+
 //main
+uniform samplerCube skybox;
+uniform int hasSkybox;
 void main()
 {
-	outputColor = fragmentColor;
+	if(hasSkybox>0) {
+		outputColor = vec4(texture(skybox, normalize(fragPos)).xyz, 1);
+	} else {
+		outputColor = vec4(0.8, 0.8, 0.8, 1);
+	}
 }
 )";
 

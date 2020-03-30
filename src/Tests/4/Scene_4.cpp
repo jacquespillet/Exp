@@ -12,7 +12,7 @@
 
 namespace KikooRenderer {
 namespace Scene_4_ {
-void Scene_4::Start(){
+void Scene_4::OnStart(){
 
     RadioGroup* dimensionRadioGroup = new RadioGroup("Dimensions", 4, 0);
     dimensionRadioGroup->AddButton("1", 1);
@@ -65,9 +65,6 @@ void Scene_4::Start(){
 
     parentWidget->optionsWidget->show();
 
-
-    OnStart();
-
     camera = new CameraScene(this, 1.0, glm::radians(70.0f), 0.1, 1000.0, 1.0);
     camera->transform->position = glm::vec3(0, 10, -15);
     camera->transform->rotation.x = glm::radians(10.0f);    
@@ -75,10 +72,10 @@ void Scene_4::Start(){
     {
         //Start each Object3D in scene
         plane = new Object3D("Triangle", this, GetPerlinShader());
-        std::vector<glm::dvec3> vertex;
-        std::vector<glm::dvec3> normals;
-        std::vector<glm::dvec2> uv;
-        std::vector<glm::dvec4> colors;
+        std::vector<glm::vec3> vertex;
+        std::vector<glm::vec3> normals;
+        std::vector<glm::vec2> uv;
+        std::vector<glm::vec4> colors;
         std::vector<int> triangles;
         
         vertex.push_back(glm::vec3(-1,-1, 0)); //bottom left
@@ -121,8 +118,6 @@ void Scene_4::Start(){
         // plane->transform->scale = glm::vec3(10, 10, 0);
     }
 
-
-    this->started = true;
 }
 
 void Scene_4::OnDestroy() {
